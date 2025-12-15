@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+<head>
+  <title>{{ mode }} Product</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="nav">
+  <a href="/admin/products">Back to Products</a>
+  <a href="/admin/logout">Admin Logout</a>
+</div>
+
+<h1>{{ mode }} Product</h1>
+
+<form method="POST">
+  <input name="name" placeholder="Product name" value="{{ product['name'] if product else '' }}" required>
+  <input name="description" placeholder="Description" value="{{ product['description'] if product else '' }}">
+  <input name="price" type="number" step="0.01" placeholder="Price" value="{{ product['price'] if product else 0 }}" required>
+  <input name="stock" type="number" min="0" placeholder="Stock" value="{{ product['stock'] if product else 0 }}" required>
+  <button type="submit">{{ mode }}</button>
+</form>
+
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+  <title>My Orders</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="nav">
+  <a href="/">Home</a>
+  <a href="/cart">Cart</a>
+  <a href="/logout">Logout</a>
+</div>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="flash">
+      {% for msg in messages %}<p>{{ msg }}</p>{% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<h1>My Orders</h1>
+
+{% if orders %}
+  {% for o, items in orders %}
+    <div class="event">
+      <h2>Order #{{ o["id"] }}</h2>
+      <p><strong>Date:</strong> {{ o["created_at"] }}</p>
+      <p><strong>Status:</strong> {{ o["status"] }}</p>
+
+      <h3>Items</h3>
+      {% for it in items %}
+        <p>- {{ it["name"] }} (x{{ it["qty"] }}) — ${{ "%.2f"|format(it["price_each"]) }}</p>
+      {% endfor %}
+    </div>
+  {% endfor %}
+{% else %}
+  <p>No orders yet.</p>
+{% endif %}
+
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+<head>
+  <title>Admin Orders</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="nav">
+  <a href="/">Home</a>
+  <a href="/admin/products">Manage Products</a>
+  <a href="/admin/logout">Admin Logout</a>
+</div>
+
+<h1>All Customer Orders</h1>
+
+{% if orders %}
+  {% for o, items in orders %}
+    <div class="event">
+      <h2>Order #{{ o["id"] }}</h2>
+      <p><strong>Customer:</strong> {{ o["name"] }} ({{ o["email"] }})</p>
+      <p><strong>Date:</strong> {{ o["created_at"] }}</p>
+      <p><strong>Status:</strong> {{ o["status"] }}</p>
+
+<form method="POST" action="/admin/orders/update/{{ o['id'] }}">
+  <label><strong>Update Status:</strong></label><br>
+  <select name="status">
+    <option value="Placed" {% if o["status"] == "Placed" %}selected{% endif %}>Placed</option>
+    <option value="Processing" {% if o["status"] == "Processing" %}selected{% endif %}>Processing</option>
+    <option value="Shipped" {% if o["status"] == "Shipped" %}selected{% endif %}>Shipped</option>
+    <option value="Delivered" {% if o["status"] == "Delivered" %}selected{% endif %}>Delivered</option>
+    <option value="Cancelled" {% if o["status"] == "Cancelled" %}selected{% endif %}>Cancelled</option>
+  </select>
+  <button type="submit">Save</button>
+</form>
+
+
+      <h3>Items</h3>
+      {% for it in items %}
+        <p>
+          {{ it["name"] }} × {{ it["qty"] }}
+          — ${{ "%.2f"|format(it["price_each"]) }}
+        </p>
+      {% endfor %}
+    </div>
+  {% endfor %}
+{% else %}
+  <p>No orders found.</p>
+{% endif %}
+
+</body>
+</html>

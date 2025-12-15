@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+  <title>Admin Products</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="nav">
+  <a href="/">Home</a>
+  <a href="/admin/products/add">Add Product</a>
+  <a href="/admin/logout">Admin Logout</a>
+  <a href="/admin/orders">View Orders</a>
+
+</div>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="flash">
+      {% for msg in messages %}<p>{{ msg }}</p>{% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<h1>Admin: Products</h1>
+
+{% if products %}
+  {% for p in products %}
+    <div class="event">
+      <h2>{{ p["name"] }}</h2>
+      <p>{{ p["description"] }}</p>
+      <p><strong>Price:</strong> ${{ "%.2f"|format(p["price"]) }}</p>
+      <p><strong>Stock:</strong> {{ p["stock"] }}</p>
+
+      <a href="/admin/products/edit/{{ p['id'] }}"><button>Edit</button></a>
+
+      <form method="POST" action="/admin/products/delete/{{ p['id'] }}" style="display:inline;">
+        <button type="submit">Delete</button>
+      </form>
+    </div>
+  {% endfor %}
+{% else %}
+  <p>No products found.</p>
+{% endif %}
+
+</body>
+</html>

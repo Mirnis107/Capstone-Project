@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>E-Commerce Store</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<div class="nav">
+  <a href="/">Home</a>
+
+  {% if session.get("user_id") %}
+    <span>Hi, {{ session.get("user_name") }}!</span>
+    <a href="/cart">Cart ({{ cart_count }})</a>
+    <a href="/orders">My Orders</a>
+    <a href="/logout">Logout</a>
+  {% else %}
+    <a href="/login">Login</a>
+  {% endif %}
+
+  {% if session.get("is_admin") %}
+    <a href="/admin/products">Admin</a>
+    <a href="/admin/logout">Admin Logout</a>
+  {% elif not session.get("user_id") %}
+    <a href="/admin/login">Admin Login</a>
+  {% endif %}
+</div>
+
+
+<!-- FLASH MESSAGES -->
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="flash">
+      {% for msg in messages %}
+        <p>{{ msg }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<!-- PRODUCT LIST -->
+<h1>Products</h1>
+
+{% if products %}
+  {% for p in products %}
+    <div class="event">
+      <h2>{{ p["name"] }}</h2>
+      <p>{{ p["description"] }}</p>
+      <p><strong>Price:</strong> ${{ "%.2f"|format(p["price"]) }}</p>
+      <p><strong>Stock:</strong> {{ p["stock"] }}</p>
+
+      {% if p["stock"] > 0 %}
+        {% if session.get("user_id") %}
+          <form method="POST" action="/add_to_cart/{{ p['id'] }}">
+            <button type="submit">Add to Cart</button>
+          </form>
+        {% else %}
+          <a href="/login">
+            <button>Login to Buy</button>
+          </a>
+        {% endif %}
+      {% else %}
+        <button disabled>Out of Stock</button>
+      {% endif %}
+    </div>
+  {% endfor %}
+{% else %}
+  <p>No products available.</p>
+{% endif %}
+
+</body>
+</html>
